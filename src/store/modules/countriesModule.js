@@ -1,0 +1,75 @@
+import api from '@/service/api'
+const countriesModule = {
+    state: {
+      currentPage: 1,
+      totalNum: 0,
+      searchKeywords: '',
+      res: [],
+      result: []
+    },
+  
+    getters: {
+      getResponse(state) {
+        return state.res
+      },
+      getPagination(state) {
+        const obj = {
+          currentPage: state.currentPage,
+          totalNum: state.totalNum
+        }
+        return obj
+      },
+      getKeywords(state) {
+        return state.searchKeywords
+      }
+    },
+  
+    mutations: {
+      SET_RESPONSE(state, payload) {
+        state.res = payload
+        console.log('####MUTATIONS FETCH_RESPONSE: ', state.res)
+      },
+      SET_PAGE(state, payload) {
+        state.currentPage = payload.currentPage
+        state.totalNum = payload.totalNum
+        console.log('####MUTATIONS SET PAGE: ', payload)
+      },
+      SET_RESULT(state, payload) {
+        const arr = []
+        state.res
+      },
+      SET_SEARCH_KEYWORDS(state, payload) {
+        state.searchKeywords = payload
+        console.log('####MUTATIONS SET KEYWORDS: ', payload)
+      }
+    },
+  
+    actions: {
+      async FETCH_API(context, payload) {
+        let source = context.state.searchKeywords !=='' ? `https://restcountries.eu/rest/v2/name/${context.state.searchKeywords}?fullText=false` : 'https://restcountries.eu/rest/v2/all'
+        const res = await api.get(source)
+        if (res) {
+          payload = res
+          const pageObj = {
+            currentPage: 1,
+            totalNum: res.length
+          } 
+          console.log('####ACTIONS: ', res)
+          context.commit('SET_RESPONSE', payload)
+          context.commit('SET_PAGE', pageObj)
+        } else {
+          this.$alert('DATA GET FIALED', 'ERROR', {
+            confirmButtonText: 'OK',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${ action }`
+              });
+            }
+          });
+        }
+      },
+    }
+  }
+  
+  export default countriesModule
