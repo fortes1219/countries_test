@@ -66,7 +66,7 @@
       @close="closeDialog"
     >
       <div class="row horizontal space">
-        <img :src="`https://www.countryflags.io/${dialogInfo.alpha2Code}/shiny/64.png`">
+        <img v-if="showDialog" :src="`https://www.countryflags.io/${dialogInfo.alpha2Code}/shiny/64.png`">
         <div class="row horizontal v_center" data-space-before="1rem">
            <span class="tags">{{ dialogInfo.alpha2Code }}</span>
           <span class="tags">{{ dialogInfo.alpha3Code }}</span>
