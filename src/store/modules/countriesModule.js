@@ -12,6 +12,9 @@ const countriesModule = {
       getResponse(state) {
         return state.res
       },
+      getResult(state) {
+        return state.result
+      },
       getPagination(state) {
         const obj = {
           currentPage: state.currentPage,
@@ -41,6 +44,15 @@ const countriesModule = {
       SET_SEARCH_KEYWORDS(state, payload) {
         state.searchKeywords = payload
         console.log('####MUTATIONS SET KEYWORDS: ', payload)
+      },
+      SET_RESULT(state, payload) {
+        const tempArr = []
+        const pageSize = 25
+        for(let i = 0; i < payload.length; i = i + pageSize){
+          tempArr.push(payload.slice(i, i + pageSize))
+        }
+        state.result = [...tempArr]
+        console.log('####MUTATIONS SET RESULT: ', state.result)
       }
     },
   
@@ -56,7 +68,9 @@ const countriesModule = {
           } 
           console.log('####ACTIONS: ', res)
           context.commit('SET_RESPONSE', payload)
+          context.commit('SET_RESULT', payload)
           context.commit('SET_PAGE', pageObj)
+          context.commit('SET_SEARCH_KEYWORDS', '')
         } else {
           this.$alert('DATA GET FIALED', 'ERROR', {
             confirmButtonText: 'OK',
