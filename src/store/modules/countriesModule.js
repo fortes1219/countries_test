@@ -4,6 +4,7 @@ const countriesModule = {
       currentPage: 1,
       totalNum: 0,
       searchKeywords: '',
+      sort: false,
       res: [],
       result: []
     },
@@ -32,19 +33,22 @@ const countriesModule = {
         state.res = payload
         console.log('####MUTATIONS FETCH_RESPONSE: ', state.res)
       },
+
       SET_PAGE(state, payload) {
         state.currentPage = payload.currentPage
         state.totalNum = payload.totalNum
         console.log('####MUTATIONS SET PAGE: ', payload)
       },
-      SET_RESULT(state, payload) {
-        const arr = []
-        state.res
+
+      SET_SORT(state, payload) {
+        state.result.sort(() => payload)
       },
+
       SET_SEARCH_KEYWORDS(state, payload) {
         state.searchKeywords = payload
         console.log('####MUTATIONS SET KEYWORDS: ', payload)
       },
+
       SET_RESULT(state, payload) {
         const tempArr = []
         const pageSize = 25

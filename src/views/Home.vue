@@ -28,14 +28,16 @@
         </el-form-item>
       </el-form>
     </div>
-
-    <el-pagination
-      :current-page="getPagination.currentPage"
-      :page-size="25"
-      layout="total, prev, pager, next"
-      :total="getPagination.totalNum"
-      @current-change="pageChange"
-    />
+    <div class="row horizontal space">
+      <el-pagination
+        :current-page="getPagination.currentPage"
+        :page-size="25"
+        layout="total, prev, pager, next"
+        :total="getPagination.totalNum"
+        @current-change="pageChange"
+      />
+      <span :class="['sortable_handler', sort ? 'toggled' : '']" @click="handleSort(-1)">Sort: A-Z</span>
+    </div>
      
     <div class="row horizontal wrap" data-row-count="5">
       <div v-for="(item, i) in result" :key="i" class="data_row" data-inset="0.5rem">
@@ -50,8 +52,8 @@
           </div>
           <div class="info">
             <span>{{ item.nativeName }}</span>
-            <span>{{ item.altSpellings.join(',') }}</span>
-            <span>{{ item.callingCodes.join(',') }}</span>
+            <span>{{ item.altSpellings.join(', ') }}</span>
+            <span>{{ item.callingCodes.join(', ') }}</span>
           </div>
         </div>
       </div>
@@ -133,6 +135,7 @@ export default {
   data() {
     return {
       search: '',
+      sort: false,
       result: [],
       showDialog: false,
       dialogInfo: {},
@@ -153,18 +156,28 @@ export default {
     ]),
     ...mapMutations([
       'SET_SEARCH_KEYWORDS',
-      'SET_PAGE'
+      'SET_PAGE',
+      'SET_SORT'
     ]),
+
     async init() {
       await this.FETCH_API()
       this.result = [...this.getResult[this.getPagination.currentPage -1]]
       console.log(this.result)
     },
+
     async handleSearch() {
       await this.SET_SEARCH_KEYWORDS(this.search)
       await this.FETCH_API()
       this.result = [...this.getResult[this.getPagination.currentPage -1]]
     },
+
+    handleSort(val) {
+      this.sort = !this.sort
+      this.SET_SORT(val)
+      this.result = [...this.getResult[this.getPagination.currentPage -1]]
+    },
+
     pageChange(val) {
       const obj = {
         currentPage: val,
@@ -173,12 +186,14 @@ export default {
       this.SET_PAGE(obj)
       this.result = [...this.getResult[this.getPagination.currentPage -1]]
     },
+
     async openDialog(obj) {
       this.dialogInfo = JSON.parse(JSON.stringify(obj))
       await this.parseInfoContents()
       this.showDialog = true
       console.log('##dialog: ', obj)
     },
+
     parseInfoContents() {
       Object.keys(this.dialogInfo.translations).map(item => {
         this.translations.push(`${this.dialogInfo.translations[item]}(${item})`)
@@ -190,6 +205,7 @@ export default {
         }
       })
     },
+
     closeDialog() {
       this.dialogInfo = {}
       this.translations = []

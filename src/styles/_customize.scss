@@ -92,3 +92,40 @@
     background-color: rgb(250, 231, 144);
     margin-right: 0.3rem;
 }
+
+.sortable_handler {
+    @include flexBox(row);
+    @include flexAlign(center, flex-start);
+    @include boxSizing;
+    padding: 0.3rem 1.5rem;
+    font-size: 0.7rem;
+    color: #fff;
+    background: rgb(22, 133, 243);
+    border-radius: 20px;
+    cursor: pointer;
+    &:hover {
+        background: rgb(27, 102, 177);
+    }
+    &::after {
+        content: "";
+        position: relative;
+        top: 50%;
+        left: 0.5rem;
+        transform: translateY(-100%);
+        display: block;
+        border-top: 6px solid transparent;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-bottom: 6px solid #fff;
+        
+    }
+    &.toggled {
+        &::after {
+            transform: translateY(-50%);
+            border-top: 6px solid #fff;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 6px solid transparent;
+        }
+    }
+}
